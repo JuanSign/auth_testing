@@ -25,7 +25,7 @@ async def register():
         if result:
             return jsonify({"error": "Email already exists"}), 400
         await connection.execute(
-            "INSERT INTO users (error, email, password) VALUES ($1, $2, $3)",
+            "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
             username, email, hashed_password
         )
     return jsonify({"message": "User registered successfully"}), 201
