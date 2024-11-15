@@ -23,9 +23,9 @@ async def register():
     async with pool.acquire() as connection:
         result = await connection.fetchrow("SELECT * FROM users WHERE email = $1", email)
         if result:
-            return jsonify({"message": "Email already exists"}), 400
+            return jsonify({"error": "Email already exists"}), 400
         await connection.execute(
-            "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
+            "INSERT INTO users (error, email, password) VALUES ($1, $2, $3)",
             username, email, hashed_password
         )
     return jsonify({"message": "User registered successfully"}), 201
@@ -41,10 +41,10 @@ async def login():
     async with pool.acquire() as connection:
         user = await connection.fetchrow("SELECT * FROM users WHERE email = $1", email)
     if not user:
-        return jsonify({"message": "Invalid email or password"}), 401
+        return jsonify({"error": "Invalid email or password"}), 401
     stored_password = user['password']
     if not check_password_hash(stored_password, password):
-        return jsonify({"message": "Invalid email or password"}), 401
+        return jsonify({"error": "Invalid email or password"}), 401
     return jsonify({"message": "Login successful"}), 200
 
 if __name__ == "__main__":
